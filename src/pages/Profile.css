@@ -1,0 +1,246 @@
+.profile-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin: 2rem auto;
+}
+
+@media (min-width: 992px) {
+    .profile-container {
+        grid-template-columns: 360px 1fr;
+    }
+}
+
+/* --- LEFT SIDEBAR (The Human) --- */
+.sidebar {
+    transform: rotate(-1.5deg);
+    border-radius: 15px 60px 15px 60px;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+    /* adjusted for AppNavbar */
+}
+
+.label {
+    font-family: var(--font-handwriting);
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.avatar-box {
+    width: 100px;
+    height: 100px;
+    background: var(--secondary-color);
+    border: var(--border-thick);
+    border-radius: 18% 82% 20% 80% / 80% 23% 77% 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-family: var(--font-handwriting);
+    margin-bottom: 20px;
+    box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.1);
+    color: var(--primary-ink);
+}
+
+.sidebar h1 {
+    font-family: var(--font-headings);
+    font-size: 2.8rem;
+    margin: 0;
+    letter-spacing: -2px;
+}
+
+.details {
+    font-family: var(--font-handwriting);
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.divider {
+    margin: 25px 0;
+    border-top: 2px dashed var(--primary-ink);
+    opacity: 0.3;
+}
+
+.academic-info {
+    margin-bottom: 20px;
+}
+
+.degree-text {
+    margin: 0;
+    font-weight: 800;
+}
+
+.uni-text {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.bio-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.social-tag {
+    background: var(--primary-ink);
+    color: white;
+    border-style: solid;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.social-tag:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* --- RIGHT CONTENT (The Work) --- */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+@media (min-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr 1.2fr;
+    }
+}
+
+.project-area {
+    grid-column: 1 / -1;
+    /* spans full width of bento-grid */
+    min-height: 350px;
+    border-radius: 40px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image:
+        linear-gradient(var(--bg-color) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, var(--bg-color) 1.5px, transparent 1.5px);
+    background-size: 20px 20px;
+    position: relative;
+    width: 100%;
+}
+
+.btn-edit {
+    background: var(--secondary-color);
+    color: var(--primary-ink);
+    border-radius: 8px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 15px;
+    font-size: 0.75rem;
+    font-family: var(--font-headings);
+    border: 2px solid var(--primary-ink);
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 2px 2px 0px var(--primary-ink);
+}
+
+.btn-edit:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--primary-ink);
+}
+
+.project-label {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.empty-projects-wrapper {
+    text-align: center;
+}
+
+.empty-projects-title {
+    font-family: var(--font-handwriting);
+    font-size: 1.5rem;
+    color: #777;
+}
+
+.empty-projects-desc {
+    margin-bottom: 25px;
+    opacity: 0.6;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.skills-card {
+    transform: rotate(0.5deg);
+}
+
+.academic-card {
+    transform: rotate(-0.8deg);
+    background: var(--secondary-color);
+    border-radius: 15px 40px;
+}
+
+.academic-label {
+    color: var(--primary-ink);
+}
+
+.degree-title {
+    margin: 10px 0 0;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.degree-subtitle {
+    font-family: var(--font-handwriting);
+    font-size: 0.9rem;
+}
+
+.skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.empty-text {
+    color: #6b7280;
+    font-style: italic;
+}
+
+.projects-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 4rem;
+    /* push down below the top label */
+    width: 100%;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .projects-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,53 @@
+/* ApplyModal.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(43, 58, 51, 0.6);
+    /* Deep Forest Teal with opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content.apply-modal {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    background-color: var(--bg-color);
+    /* Warm alabaster */
+    padding: 2rem;
+    box-shadow: 12px 12px 0 var(--primary-ink);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--primary-ink);
+    cursor: pointer;
+    font-family: var(--font-headings);
+    font-weight: bold;
+}
+
+.modal-close:hover {
+    color: var(--accent-color);
+}
+
+.project-title-preview {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: -0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px dashed var(--primary-ink);
+}
+
+.success-icon {
+    font-size: 3rem;
+}

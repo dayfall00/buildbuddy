@@ -1,0 +1,220 @@
+# Build Buddy - Technical Architecture Document
+
+## 1. High-Level System Architecture
+Build Buddy operates on a serverless, Firebase-first architecture. The frontend is a Single Page Application (SPA) built with React and Vite, hosted on Vercel. All backend logic, data storage, and authentication are handled directly by Firebase services through the client-side SDK.
+
+**System Flow Diagram:**
+```text
+[User Browser / Device]
+        │
+        ▼
+[Vercel Edge Network] ── (Serves React/Vite Static Assets)
+        │
+        ▼
+[React Frontend (SPA)]
+        │
+        ├── Auth State ──────────► [Firebase Authentication] (Email/Pass, OAuth)
+        │
+        ├── Data Read/Write ─────► [Cloud Firestore] (NoSQL Database)
+        │                          ├─ Security Rules validate all requests
+        │                          └─ Real-time listeners for notifications/feed
+        │
+        └── Media Uploads ───────► [Firebase Storage] (Profile pics, Project assets)
+```
+
+**Responsibilities:**
+- **React Frontend**: Manages UI state, routing, and conditional rendering based on auth. Communicates with Firebase directly.
+- **Firebase Auth**: Verifies users, issues JWTs, and manages user sessions. Provides the `uid` used across the database.
+- **Cloud Firestore**: Stores all application data. Security rules enforce authorization and business logic directly on the database layer.
+
+---
+
+## 2. Firestore Database Schema
+We will use an un-nested, flat collection structure to optimize query performance and limit read costs.
+
+### `users` Collection
+Stores user profiles and statistics.
+- **Document ID**: Auth `uid`
+- **Fields**:
+  - `displayName` (string)
+  - `email` (string)
+  - `bio` (string)
+  - `photoURL` (string)
+  - `skills` (array of strings)
+  - `createdAt` (timestamp)
+- **Relationships**: 1:N with `projects` (owner), 1:N with `join_requests`.
+- **Indexing**: By `createdAt` for latest users.
+
+### `projects` Collection
+Stores all project listings.
+- **Document ID**: Auto-generated
+- **Fields**:
+  - `title` (string)
+  - `description` (string)
+  - `ownerId` (string, ref to `users` doc ID)
+  - `ownerName` (string, denormalized)
+  - `status` (string: "open", "closed")
+  - `tags` (array of strings)
+  - `members` (array of user `uid`s, including the owner)
+  - `maxMembers` (number)
+  - `createdAt` (timestamp)
+- **Relationships**: Owned by one user. Many users can be in `members`.
+- **Indexing**: 
+  - Compound index on `status` and `createdAt` (for feed sorting).
+  - Index on `members` (array-contains) to fetch a user's projects.
+
+### `join_requests` Collection
+Tracks requests mapping users to projects they want to join.
+- **Document ID**: Auto-generated (or composite `projectId_userId`)
+- **Fields**:
+  - `projectId` (string, ref to `projects`)
+  - `projectTitle` (string, denormalized)
+  - `requesterId` (string, ref to `users`)
+  - `ownerId` (string, ref to `users` - useful for querying requests sent to me)
+  - `status` (string: "pending", "accepted", "rejected")
+  - `message` (string, optional cover letter)
+  - `createdAt` (timestamp)
+- **Relationships**: Bridges `users` and `projects`.
+- **Indexing**: 
+  - Compound index on `ownerId` and `status` (to view incoming requests). 
+  - Compound index on `requesterId` and `status` (to view outgoing requests).
+
+### `notifications` Collection
+Alerts users of important events.
+- **Document ID**: Auto-generated
+- **Fields**:
+  - `recipientId` (string, ref to `users`)
+  - `type` (string: "request_received", "request_accepted", "request_rejected")
+  - `relatedProjectId` (string)
+  - `message` (string)
+  - `read` (boolean)
+  - `createdAt` (timestamp)
+- **Relationships**: Belongs to exactly one user.
+- **Indexing**: Compound index on `recipientId` and `createdAt`.
+
+---
+
+## 3. Frontend Folder Structure
+A highly modular, feature-based and hook-centric architecture optimized for scale.
+
+```text
+src/
+├── assets/         # Static assets, universal fonts, icons
+├── components/     # Reusable UI elements following the design system
+│   ├── ui/         # Base atoms (Button, Card, Input)
+│   ├── layout/     # Structural items (Navbar, Sidebar, Container)
+│   └── project/    # Domain specific components (ProjectCard, FeedListItem)
+├── pages/          # Top-level route components matching Page Architecture
+├── hooks/          # Custom React hooks (e.g., useAuth, useProjects)
+├── services/       # Firebase logic extraction (pure functions to hit Firestore)
+├── firebase/       # Firebase initialization and config (firebase.js)
+├── contexts/       # React Context providers (AuthProvider)
+├── styles/         # Plain CSS files
+│   ├── variables.css # Core design system (colors, fonts, shadows)
+│   ├── global.css    # Resets and base HTML styles
+│   └── components/   # Specific component styles (if not using modules)
+├── utils/          # Helpers (formatDate, validators)
+├── App.jsx         # Main app shell & routing setup
+└── main.jsx        # React DOM entry point
+```
+
+**Purpose:**
+- **components**: Isolates the styling and presentation.
+- **hooks** & **services**: Isolates data fetching and Firebase SDK dependencies away from components.
+- **firebase**: Pure initialization block, setting the app, auth, and DB instances.
+
+---
+
+## 4. Page Architecture
+
+### App Shell Configuration
+- `Landing` 
+  - **Purpose**: Displays the value proposition of Build Buddy. Introduces features and drives user signup. Unauthenticated Route.
+- `Login` & `Signup` 
+  - **Purpose**: Email/password forms for authentication and profile creation. Unauthenticated Routes.
+- `Home Feed` 
+  - **Purpose**: Main social feed page, a scrolling view of open projects. Shows project cards ordered by creation date, filtered by tags or skills. Authenticated Route.
+- `Project Details` (`/projects/:id`)
+  - **Purpose**: Detailed view of a single project. Displays full description, current team members, creator info, and a "Join Project" button if the user is not a member. Authenticated Route.
+- `Create Project` (`/projects/new`)
+  - **Purpose**: Form to initiate a new project, defining the title, requirements, tags, and maximum team members. Authenticated Route.
+- `Profile` (`/profile/:uid`)
+  - **Purpose**: View of a user's skillset, bio, and a list of their owned/joined projects. A user can edit their own profile if it's theirs. Authenticated Route.
+- `Notifications` 
+  - **Purpose**: An inbox-style list of alerts, where users can see if they were accepted or if someone requested to join their project. Includes inline "Accept"/"Reject" action buttons for project owners. Authenticated Route.
+
+---
+
+## 5. Feature Workflows
+
+### User Signup Workflow
+1. User submits details on `/signup` form (`email`, `password`, `displayName`).
+2. Frontend calls `createUserWithEmailAndPassword()` via the Auth service.
+3. On success, the Auth SDK returns an authenticated User object (`uid`).
+4. Frontend immediately writes a new document to the `users` collection with ID `uid`, populated with `displayName` and creation timestamp.
+5. User is routed to the `Home Feed`.
+
+### Creating a Project Workflow
+1. User navigates to `/projects/new` and fills out title, skills needed, etc.
+2. Form submission triggers a service function calling `addDoc(collection(db, 'projects'), projectData)`.
+3. The payload automatically includes `ownerId: currentUser.uid` and `{status: 'open', members: [currentUser.uid]}`.
+4. On success, the frontend routes the user to the new project's detail page (`/projects/[new-doc-id]`).
+
+### Joining a Project Workflow
+1. User views a project not owned by them and clicks "Join Project".
+2. Frontend calls a service to create a document in `join_requests`:
+    - Payload: `{projectId, requesterId: currentUser.uid, ownerId: project.ownerId, status: 'pending'}`
+3. The server (via Firebase rule/trigger logic) does not exist, so the frontend directly writes to `notifications` alerting the `project.ownerId` in a batched write alongside the request.
+4. UI updates to show "Request Sent".
+
+### Accepting Requests Workflow
+1. Project Owner opens `Notifications` page.
+2. Checks a `request_received` notification and clicks "Accept".
+3. Frontend performs a batch update (using `writeBatch`):
+    - **Update `join_requests`**: changes request status to "accepted".
+    - **Update `projects`**: adds the requester's UID to the `members` array via `arrayUnion`.
+    - **Add `notifications`**: alerts the requester that they were accepted.
+4. Notification UI marks the request as resolved.
+
+### Notifications Flow
+1. Notification Bell icon in Navbar listens via `onSnapshot` to the `notifications` collection `where("recipientId", "==", currentUser.uid)` and `where("read", "==", false)`.
+2. When a batched write occurs elsewhere (someone joins, owner accepts), the listener picks it up.
+3. Bell displays a badge `(1)`. User clicks to read, which updates `read: true` for those docs.
+
+---
+
+## 6. Firebase Security Rules Strategy
+
+All authorization happens in Firestore via Security Rules (`firestore.rules`). Standard methodology: Authenticated-only access, with constraints based on the `request.auth.uid`.
+
+- **Users**:
+  - `read`: Any authenticated user can read public profile fields.
+  - `write`: ONLY the user whose `.uid` matches the document ID is allowed.
+- **Projects**:
+  - `create`: Any authenticated user can create. They must specify themselves as `ownerId`.
+  - `read`: Any authenticated user can read.
+  - `update`: ONLY the `ownerId` can change the details/status. To add a user to `members`, a rule must verify the addition was authorized. Prevent editing other users' data.
+  - `delete`: ONLY the `ownerId`.
+- **Join Requests**:
+  - `create`: Any authenticated user can create, IF the target project exists and is "open" (prevents joining closed projects). 
+  - `read`: A user can only read requests where they are `requesterId` (their own) or `ownerId` (requests sent to their projects).
+  - `update`: ONLY the `ownerId` of the project can update the `status` field.
+- **Notifications**:
+  - `create`: Any authenticated user can write a notification directed at someone else (e.g., when sending a join request).
+  - `read`, `update` (mark as read), `delete`: ONLY the `recipientId` user.
+
+---
+
+## 7. Scalability Considerations
+
+- **NoSQL Flattening**: Deeply nested data is avoided to bypass the 1MB document limit. We denormalize where necessary (e.g., storing `ownerName` in `projects` to avoid a secondary `users` query per project in the feed).
+- **Read Cost Reduction (Feed Pagination)**:
+  - The Home feed must use Firestore querying `limit()` and `startAfter()` cursors.
+  - Fetching the first 20 open projects, rather than the whole collection, prevents massive read operations.
+- **Indexing Strategy**:
+  - Composite indexes must be manually created in the Firebase Console for compound queries, like filtering projects by "open" status AND ordering by "created timestamp", or retrieving unread notifications for a specific user.
+- **Array Contention (Hot Documents)**:
+  - Adding a member to a project's `members` array using `arrayUnion()` is safe for concurrent writes up to 1 write/second per document. Given the scale (college teams), a project team size will mostly be < 10.
+  - No single document will behave as a "hot document" under this architecture.
+- **Security Check Optimization**:
+  - Rules should not invoke external `get()` lookups inside the query unless strictly necessary, as they incur a read cost. We secure access via internal fields (`resource.data.ownerId == request.auth.uid`).

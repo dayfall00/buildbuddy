@@ -1,0 +1,45 @@
+.create-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.create-main {
+    flex-grow: 1;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 800px;
+    background-color: var(--card-bg);
+}
+
+.sketch-textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .form-row {
+        flex-direction: row;
+    }
+
+    .half-width {
+        flex: 1;
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}

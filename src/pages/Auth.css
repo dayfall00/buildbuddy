@@ -1,0 +1,136 @@
+/* Auth Pages Common Styles */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+    background-color: var(--card-bg);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-2xl {
+    font-size: 1.75rem;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.auth-error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border-color: #ef4444;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--primary-ink);
+}
+
+.sketch-input {
+    padding: 0.75rem 1rem;
+    border: var(--border-thin);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-color);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    outline: none;
+}
+
+.sketch-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-sm);
+    background-color: var(--card-bg);
+}
+
+.auth-links {
+    font-size: 0.9rem;
+    color: #4a5d53;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--primary-ink);
+    margin-top: 2rem;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #6b7280;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: var(--border-thin);
+    border-color: #d1d5db;
+    /* lighter grey for separator */
+}
+
+.separator span {
+    padding: 0 1rem;
+    font-family: var(--font-handwriting);
+    font-size: 1.1rem;
+    /* Adjust padding and font-size as you like */
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background-color: var(--card-bg);
+    /* Keep it white/card bg */
+    border-color: #d1d5db;
+    /* Lighter border for Google button */
+}
+
+.google-btn:hover {
+    background-color: #f9fafb;
+}

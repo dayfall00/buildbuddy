@@ -1,0 +1,111 @@
+.details-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.details-main {
+    flex-grow: 1;
+    padding: 2rem 1rem;
+}
+
+.details-header {
+    border-bottom-width: 5px;
+    /* Thicker bottom border for sketch feel */
+}
+
+.header-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+}
+
+.meta-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.details-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.details-owner {
+    color: #4a5d53;
+    font-size: 1.1rem;
+}
+
+.link-hover:hover {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 992px) {
+    .details-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.details-body {
+    height: fit-content;
+}
+
+.desc-content p {
+    margin-bottom: 1rem;
+    color: var(--primary-ink);
+    font-size: 1.05rem;
+}
+
+.inline-icon {
+    vertical-align: text-bottom;
+    margin-right: 0.25rem;
+}
+
+/* Sidebar Team Card */
+.team-card {
+    position: sticky;
+    top: 6rem;
+}
+
+.progress-container {
+    width: 100%;
+    height: 12px;
+    background-color: var(--bg-color);
+    border: var(--border-thin);
+    border-radius: var(--radius-pill);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--secondary-color);
+    border-right: var(--border-thin);
+    transition: width 0.5s ease;
+}
+
+.team-count {
+    font-size: 0.9rem;
+    color: #4a5d53;
+    text-align: center;
+}

@@ -1,0 +1,142 @@
+/* Feed Page Styles */
+.feed-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.feed-main {
+    flex-grow: 1;
+    padding: 2rem 1rem;
+}
+
+.feed-header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .feed-header {
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+}
+
+.feed-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.feed-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .feed-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .feed-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Project Card Styles */
+.project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.project-title {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+    line-height: 1.3;
+}
+
+.project-date {
+    font-size: 0.8rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.project-owner {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #4a5d53;
+}
+
+.project-desc {
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--primary-ink);
+    display: -webkit-box;
+    /* Use standard property internally and warn-disable for compat */
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    /* Let footer handle spacing */
+}
+
+.tag-sketch {
+    font-family: var(--font-handwriting);
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    padding: 0;
+    font-size: 1rem;
+}
+
+.project-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--primary-ink);
+}
+
+.project-members {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Loading & Empty States */
+.loading-state,
+.empty-state {
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-state h3 {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
