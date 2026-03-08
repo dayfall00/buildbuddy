@@ -55,9 +55,6 @@ const AppNavbar = () => {
             <NavLink to="/messages" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                 <MessageSquare size={18} /> Messages
             </NavLink>
-            <NavLink to="/notifications" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-                <Bell size={18} /> Notifications
-            </NavLink>
         </>
     );
 
