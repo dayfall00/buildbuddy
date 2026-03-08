@@ -1,0 +1,147 @@
+.my-projects-page {
+    /* Container styles handled by global .container */
+    padding-bottom: 4rem;
+}
+
+.projects-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-title-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.projects-tabs {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.tab-btn {
+    padding: 0 0 0.5rem 0;
+    color: var(--primary-ink);
+    opacity: 0.6;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    transition: all var(--transition-fast);
+}
+
+.tab-btn.active {
+    opacity: 1;
+    font-weight: 700;
+    border-bottom-color: var(--primary-ink);
+}
+
+.tab-btn:hover {
+    opacity: 1;
+}
+
+/* Stats Cards Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    padding: 1.5rem;
+    border: var(--border-thick);
+    box-shadow: var(--shadow-sm); /* Harder, smaller shadow like the screenshot */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--primary-ink);
+}
+
+.stat-value.red-text {
+    color: #ff6b6b; /* Accent for the middle card number */
+}
+
+/* Specific Card Colors */
+.bg-neon {
+    background-color: #ccff00;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.bg-blue {
+    background-color: #4ddbff;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid rgba(43, 58, 51, 0.1);
+    margin: 3rem 0;
+    width: 100%;
+}
+
+/* Projects Grid Updates */
+.new-project-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed rgba(43, 58, 51, 0.3);
+    border-radius: 0; /* Boxy like the sketch */
+    background-color: transparent;
+    min-height: 250px;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    color: rgba(43, 58, 51, 0.5);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.new-project-placeholder:hover {
+    border-color: rgba(43, 58, 51, 0.6);
+    color: rgba(43, 58, 51, 0.8);
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Red Button Style specifically for the header */
+.btn-red {
+    background-color: #ff6b6b;
+    color: white;
+    font-weight: 800;
+    border-radius: 0;
+    border: var(--border-thick);
+    box-shadow: var(--shadow-sm);
+    padding: 0.6rem 1.25rem;
+}
+
+.btn-red:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-md);
+    background-color: #ff5252;
+}
+
+.btn-red:active {
+    transform: translate(0, 0);
+    box-shadow: none;
+}
