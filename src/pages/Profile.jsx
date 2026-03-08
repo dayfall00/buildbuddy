@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import AppNavbar from '../components/layout/AppNavbar';
 import ProjectCard from '../components/project/ProjectCard';
 import { useAuth } from '../contexts/AuthContext';
@@ -70,8 +70,12 @@ const Profile = () => {
 
                 <aside className="sketch-card sidebar">
                     <span className="label">// The Human</span>
-                    <div className="avatar-box">
-                        {profileUser.displayName?.charAt(0).toUpperCase() || '?'}
+                    <div className="avatar-box" style={{ padding: 0, overflow: 'hidden' }}>
+                        <img 
+                            src={`https://api.dicebear.com/7.x/micah/svg?seed=${profileUser.displayName || 'User'}&backgroundColor=transparent`} 
+                            alt={`${profileUser.displayName}'s Avatar`} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+                        />
                     </div>
                     <h1>{profileUser.displayName}</h1>
                     <div className="details">
@@ -106,7 +110,7 @@ const Profile = () => {
                 <main className="main-content">
                     <div className="bento-grid">
                         <section className="sketch-card project-area">
-                            {isOwnProfile && <button className="btn-edit" onClick={() => alert('Edit profile coming soon')}>✎ Edit Profile</button>}
+                            {isOwnProfile && <Link to="/settings" className="btn-edit text-decoration-none">✎ Edit Profile</Link>}
                             <span className="label project-label">// My Projects</span>
 
                             {userProjects.length === 0 ? (
