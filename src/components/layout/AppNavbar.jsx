@@ -92,8 +92,13 @@ const AppNavbar = () => {
                             className="avatar-btn"
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             aria-label="User menu"
+                            style={{ padding: 0, overflow: 'hidden' }}
                         >
-                            {userProfile?.displayName?.charAt(0).toUpperCase() || currentUser?.displayName?.charAt(0).toUpperCase() || 'U'}
+                            <img 
+                                src={`https://api.dicebear.com/7.x/micah/svg?seed=${userProfile?.displayName || currentUser?.displayName || 'User'}&backgroundColor=transparent`} 
+                                alt="User Avatar" 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
                         </button>
 
                         {isDropdownOpen && (
