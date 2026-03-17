@@ -70,8 +70,10 @@ export default function MyProjects() {
     const activeBuildsCount = myBuilds.filter(p => p.status === 'active' || p.recruiting !== false).length;
 
     const openRolesCount = myBuilds.reduce((sum, p) => {
-        const count = p.roles_open !== undefined ? p.roles_open : (p.openRoles?.length || 0);
-        return sum + count;
+        const teamSize = p.teamSize || 4;
+        const memberCount = p.members?.length || 1;
+        const openSpots = Math.max(0, teamSize - memberCount);
+        return sum + openSpots;
     }, 0);
 
     const pendingRequestsCount = myBuilds.reduce((sum, p) => {

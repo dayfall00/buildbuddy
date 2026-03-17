@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import AppNavbar from '../components/layout/AppNavbar';
 import { useAuth } from '../contexts/AuthContext';
-import { getProjectById } from '../services/projectService';
+import { getProjectById, deleteProject } from '../services/projectService';
 import ApplyModal from '../components/project/ApplyModal';
 import { Users, Clock, Tag, Briefcase, Wrench, Globe, Github, FileText, Layout } from 'lucide-react';
 import './ProjectDetails.css';
@@ -186,22 +186,47 @@ const ProjectDetails = () => {
                                 </div>
                             </div>
 
-                            {project.openRoles?.length > 0 && (
+                            {Math.max(0, (project.teamSize || 4) - (project.members?.length || 1)) > 0 && (
                                 <div className="mb-4">
                                     <h4 className="text-sm font-bold text-muted mb-2 flex items-center gap-1">
                                         <Briefcase size={14} /> Open Roles
                                     </h4>
-                                    <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
-                                        {project.openRoles.map((role, idx) => (
-                                            <li key={idx}>{role}</li>
-                                        ))}
-                                    </ul>
+                                    <p className="text-sm font-medium text-gray-700 mb-2">
+                                        {Math.max(0, (project.teamSize || 4) - (project.members?.length || 1))} open spots available
+                                    </p>
+                                    {project.openRoles?.length > 0 && (
+                                        <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                                            {project.openRoles.map((role, idx) => (
+                                                <li key={idx}>{role}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             )}
 
                             <div className="mt-6">
                                 {isOwner ? (
-                                    <button className="btn w-full btn-secondary opacity-70 cursor-not-allowed" disabled>You are the creator</button>
+                                    <>
+                                        <button className="btn w-full btn-secondary opacity-70 cursor-not-allowed mb-3" disabled>You are the creator</button>
+                                        <button 
+                                            onClick={async () => {
+                                                if (window.confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+                                                    try {
+                                                        await deleteProject(project.id, currentUser.uid);
+                                                        window.location.href = '/my-projects'; // Hard redirect to guarantee state refresh
+                                                    } catch (err) {
+                                                        alert(err.message || 'Failed to delete project');
+                                                    }
+                                                }
+                                            }}
+                                            className="btn w-full text-lg py-3" 
+                                            style={{ borderColor: '#dc2626', color: '#dc2626', backgroundColor: 'transparent' }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fef2f2'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                        >
+                                            Delete Project
+                                        </button>
+                                    </>
                                 ) : isMember ? (
                                     <button className="btn w-full btn-secondary opacity-70 cursor-not-allowed" disabled>You are a member</button>
                                 ) : !project.recruiting ? (
