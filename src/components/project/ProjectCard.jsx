@@ -17,28 +17,28 @@ export default function ProjectCard({ project }) {
     return (
         <div className="project-card-new">
             {/* Top row */}
-            <div className="flex justify-between items-start mb-4">
+            <div className="project-card-header">
                 <span className={isRecruiting ? 'badge-recruiting' : 'badge-closed'}>
                     {statusText}
                 </span>
-                <div className="flex items-center gap-1 font-bold text-sm text-primary-ink">
+                <div className="project-card-members">
                     <Users size={16} className="text-primary-ink" style={{ strokeWidth: 2.5 }} />
                     <span>{memberCount}/{maxMembers}</span>
                 </div>
             </div>
 
             {/* Title & Subtitle */}
-            <div className="mb-4 grow">
-                <h3 className="text-2xl font-black text-primary-ink mb-1 line-clamp-2 leading-tight">
+            <div className="project-card-body">
+                <h3 className="project-card-title">
                     {project.title}
                 </h3>
-                <p className="text-gray-500 font-medium italic text-sm truncate">
+                <p className="project-card-subtitle">
                     {project.category || 'project'} • by {project.ownerName || 'Unknown'}
                 </p>
             </div>
 
             {/* Tech Stack Tags */}
-            <div className="flex flex-wrap gap-2 mb-2 h-[50px] overflow-hidden">
+            <div className="project-card-tags">
                 {project.techStack?.slice(0, 3).map(tech => (
                     <span key={tech} className="tech-tag-sharp">
                         {tech}

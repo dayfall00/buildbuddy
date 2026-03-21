@@ -129,3 +129,83 @@
     box-shadow: 2px 2px 0 var(--primary-ink, #111827);
     color: white;
 }
+
+/* Custom classes to replace missing Tailwind */
+.my-projects-container {
+    padding: 2.5rem 1.5rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.tabs-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    border-bottom: 2px solid #d1d5db;
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap; 
+}
+
+.tab-button {
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    padding-bottom: 0.25rem;
+    border-bottom: 3px solid transparent;
+    color: #9ca3af; 
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.tab-button:hover {
+    color: #4b5563; 
+}
+
+.tab-button.active {
+    color: var(--primary-ink, #111827);
+    border-bottom-color: var(--primary-ink, #111827);
+}
+
+.loading-container {
+    text-align: center;
+    padding: 3rem 0;
+    margin-top: 1.5rem;
+}
+
+.divider {
+    border-top: 1px solid #d1d5db;
+    margin-top: 2rem;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 0;
+    grid-column: 1 / -1;
+}
+
+.empty-state-btn {
+    margin-top: 1rem;
+}
+
+.error-message {
+    color: #ef4444;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+/* Page Wrapper overrides */
+.page-wrapper {
+    min-height: 100vh;
+    background-color: #f4f1ea;
+    width: 100%;
+}
+
+.mt-8 { margin-top: 2rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-6 { margin-top: 1.5rem; }

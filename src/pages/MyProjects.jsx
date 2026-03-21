@@ -91,10 +91,10 @@ export default function MyProjects() {
     else if (activeTab === 'applied_builds') currentProjects = appliedProjects;
 
     return (
-        <div className="page-wrapper min-h-screen bg-[#f4f1ea]">
+        <div className="page-wrapper">
             <AppNavbar />
 
-            <main className="max-w-[1100px] mx-auto px-6 pt-10 pb-16">
+            <main className="my-projects-container">
                 <div className="header-flex-row">
                     <h1 className="text-4xl md:text-5xl font-black uppercase text-primary-ink tracking-wide font-heading m-0">
                         MY PROJECTS
@@ -107,32 +107,32 @@ export default function MyProjects() {
                     </button>
                 </div>
 
-                <div className="flex gap-6 mt-6 border-b border-gray-300 pb-2">
+                <div className="tabs-container">
                     <button
-                        className={`text-md font-bold transition-colors pb-1 border-b-[3px] ${activeTab === 'my_builds' ? 'text-primary-ink border-primary-ink' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                        className={`tab-button ${activeTab === 'my_builds' ? 'active' : ''}`}
                         onClick={() => setActiveTab('my_builds')}
                     >
                         My Builds ({myBuilds.length})
                     </button>
                     <button
-                        className={`text-md font-bold transition-colors pb-1 border-b-[3px] ${activeTab === 'joined_builds' ? 'text-primary-ink border-primary-ink' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                        className={`tab-button ${activeTab === 'joined_builds' ? 'active' : ''}`}
                         onClick={() => setActiveTab('joined_builds')}
                     >
                         Joined Builds ({joinedBuilds.length})
                     </button>
                     <button
-                        className={`text-md font-bold transition-colors pb-1 border-b-[3px] ${activeTab === 'applied_builds' ? 'text-primary-ink border-primary-ink' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                        className={`tab-button ${activeTab === 'applied_builds' ? 'active' : ''}`}
                         onClick={() => setActiveTab('applied_builds')}
                     >
                         Pending Applications ({appliedProjects.length})
                     </button>
                 </div>
 
-                {error && <div className="sketch-card error-card my-4 text-red-500 font-bold">{error}</div>}
+                {error && <div className="sketch-card error-card error-message">{error}</div>}
 
                 {loading ? (
-                    <div className="text-center py-12 mt-6">
-                        <h3 className="handwriting text-2xl text-muted animate-pulse">Loading builds...</h3>
+                    <div className="loading-container">
+                        <h3 className="handwriting text-muted">Loading builds...</h3>
                     </div>
                 ) : (
                     <div className="mt-6"> {/* Tabs -> Stats: 24px (mt-6) */}
@@ -155,7 +155,7 @@ export default function MyProjects() {
                                 </div>
 
                                 {/* Stats -> Divider: 32px (mt-8) */}
-                                <div className="border-t border-gray-300 mt-8 mb-0 w-full block"></div>
+                                <div className="divider"></div>
                             </>
                         )}
 
@@ -175,17 +175,17 @@ export default function MyProjects() {
                             )}
 
                             {activeTab === 'joined_builds' && currentProjects.length === 0 && (
-                                <div className="text-center py-12" style={{ gridColumn: '1 / -1' }}>
-                                    <h3 className="handwriting text-2xl text-muted mb-4">You haven't joined any builds yet.</h3>
-                                    <button onClick={() => navigate('/explore')} className="btn-sketch-red px-6 py-3 mx-auto">
+                                <div className="empty-state">
+                                    <h3 className="handwriting text-muted mb-4">You haven't joined any builds yet.</h3>
+                                    <button onClick={() => navigate('/explore')} className="btn-sketch-red px-6 py-3 mx-auto empty-state-btn">
                                         Explore Builds
                                     </button>
                                 </div>
                             )}
 
                             {activeTab === 'applied_builds' && currentProjects.length === 0 && (
-                                <div className="text-center py-12" style={{ gridColumn: '1 / -1' }}>
-                                    <h3 className="handwriting text-2xl text-muted mb-4">You have no pending applications.</h3>
+                                <div className="empty-state">
+                                    <h3 className="handwriting text-muted mb-4">You have no pending applications.</h3>
                                 </div>
                             )}
                         </div>
