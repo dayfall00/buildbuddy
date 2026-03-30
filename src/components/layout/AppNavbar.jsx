@@ -92,6 +92,13 @@ const AppNavbar = ({ searchQuery, onSearchChange }) => {
                         <Bell size={22} />
                     </Link>
 
+                    <button 
+                        onClick={() => navigate('/projects/new')}
+                        className="hide-mobile px-4 py-1.5 rounded-full bg-primary text-on-primary font-bold text-sm hover:-translate-y-[2px] shadow-sm hover:shadow-md transition-all duration-300 ml-2 mr-2 border border-transparent hover:bg-primary-container"
+                    >
+                        + New Project
+                    </button>
+
                     {/* User Avatar Dropdown */}
                     <div className="user-dropdown-container" ref={dropdownRef}>
                         <button
