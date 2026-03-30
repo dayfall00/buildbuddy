@@ -21,7 +21,7 @@
     align-items: center;
     gap: 1rem;
     text-decoration: none;
-    color: var(--on-surface);
+    color: var(--on-surface-variant);
     padding: 0.85rem 1rem;
     border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
@@ -30,14 +30,27 @@
 
 .quick-access-item:hover {
     background-color: var(--surface-container-low);
+    color: var(--on-surface);
     transform: translateX(4px);
 }
 
-.quick-access-item .icon-wrapper {
+.quick-access-item.active {
+    background-color: var(--secondary-container);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.quick-access-item .icon-wrapper, .quick-access-item svg {
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.8;
+    opacity: 0.5;
+    transition: all var(--transition-fast);
+}
+
+.quick-access-item:hover svg, .quick-access-item.active svg {
+    opacity: 1;
+    color: var(--primary);
 }
 
 .quick-access-item .item-text {

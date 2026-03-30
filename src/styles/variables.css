@@ -1,17 +1,17 @@
 :root {
-  /* The Ethereal Nomad Color Palette */
-  --bg-color: #fcf9f5;
-  --surface: #fcf9f5;
-  --surface-container-low: #f6f3ef;
+  /* Warm Neutral Color Palette */
+  --bg-color: #f5f3f1;
+  --surface: #ffffff;
+  --surface-container-low: #f1eeea;
   --surface-container-lowest: #ffffff;
-  --primary: #a63b19;
-  --primary-container: #ed6f49;
+  --primary: #c2410c;
+  --primary-container: #ea580c;
   --on-primary: #ffffff;
-  --secondary-container: #c4ecd2;
-  --on-secondary-container: #486c57;
-  --outline-variant: #dfc0b7;
-  --on-surface: #1c1c1a;
-  --on-surface-variant: #57423c;
+  --secondary-container: #fed7aa;
+  --on-secondary-container: #c2410c;
+  --outline-variant: #e7e5e4;
+  --on-surface: #1c1917;
+  --on-surface-variant: #57534e;
   
   /* Legacy mappings to ease migration */
   --card-bg: var(--surface-container-lowest);

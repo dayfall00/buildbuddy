@@ -28,3 +28,12 @@ dist-ssr
 
 .env.*
 
+
+# Agent and scripts
+.agent/
+tmp/
+stitch_screens/
+replace_colors.js
+theme_update.js
+theme_update.mjs
+theme_update_pt2.mjs

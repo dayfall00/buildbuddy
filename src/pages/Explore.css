@@ -37,3 +37,10 @@
         order: -1;
     }
 }
+
+/* Sidebar Tint Override */
+.home-left-col .sketch-card,
+.home-right-col .sketch-card {
+    background-color: var(--surface-container-low);
+    border-color: var(--outline-variant);
+}
