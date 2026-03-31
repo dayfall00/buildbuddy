@@ -53,9 +53,9 @@ export default function QuickAccessPanel() {
                     {activeBuildsCount > 0 && <span className="badge badge-count">{activeBuildsCount}</span>}
                 </NavLink>
 
-                <NavLink to="/saved" className="quick-access-item">
+                <NavLink to="/my-projects" className="quick-access-item">
                     <span className="icon-wrapper"><Bookmark size={18} /></span>
-                    <span className="item-text font-bold">Saved Projects</span>
+                    <span className="item-text font-bold">Archived Projects</span>
                 </NavLink>
 
                 <NavLink to="/notifications" className="quick-access-item">
@@ -64,7 +64,7 @@ export default function QuickAccessPanel() {
                     {teamRequestsCount > 0 && <span className="badge badge-count badge-warning">{teamRequestsCount}</span>}
                 </NavLink>
 
-                <NavLink to="/events" className="quick-access-item">
+                <NavLink to="/coming-soon" className="quick-access-item">
                     <span className="icon-wrapper"><GraduationCap size={18} /></span>
                     <span className="item-text font-bold">Campus Events</span>
                 </NavLink>

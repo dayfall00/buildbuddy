@@ -6,7 +6,8 @@ import YourStackPanel from '../components/home/YourStackPanel';
 import TopBuildersPanel from '../components/home/TopBuildersPanel';
 import TrendingTechPanel from '../components/home/TrendingTechPanel';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserProjects } from '../services/projectService';
+import { getUserProjects, updateProject } from '../services/projectService';
+import { Timestamp, serverTimestamp } from 'firebase/firestore';
 import '../pages/Home.css';
 
 export default function MyProjects() {
@@ -17,6 +18,13 @@ export default function MyProjects() {
     const [allProjects, setAllProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [openMenuId, setOpenMenuId] = useState(null);
+
+    useEffect(() => {
+        const handleClickOutside = () => setOpenMenuId(null);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (!currentUser) return;
@@ -40,16 +48,86 @@ export default function MyProjects() {
         fetchData();
     }, [currentUser]);
 
-    // Filtering logic
-    const displayedProjects = allProjects.filter(p => {
-        const isRecruiting = p.status === 'active' || p.recruiting !== false;
-        if (activeTab === 'Active') return isRecruiting;
-        if (activeTab === 'Archived') return !isRecruiting;
-        return true; 
+    // Robust fallbacks
+    const getProjectVisuals = (p) => ({
+        status: p.status || 'active',
+        isPinned: !!p.isPinned,
+        pinnedAt: p.pinnedAt || null,
+        updatedAt: p.updatedAt || null
     });
 
-    // Pinned projects: grab the first two active projects, just as an example
-    const pinnedProjects = allProjects.filter(p => (p.status === 'active' || p.recruiting !== false)).slice(0, 2);
+    // Filtering logic for the main feed
+    const displayedProjects = allProjects.filter(p => {
+        const visuals = getProjectVisuals(p);
+        
+        if (activeTab === 'All') return visuals.status === 'active';
+        if (activeTab === 'Active') return visuals.status === 'active';
+        if (activeTab === 'Archived') return visuals.status === 'archived';
+        return false; 
+    });
+
+    // Filtering & Sorting logic for Pinned Projects
+    const pinnedProjects = allProjects
+        .filter(p => {
+            const visuals = getProjectVisuals(p);
+            return visuals.status === 'active' && visuals.isPinned === true;
+        })
+        .sort((a, b) => {
+            const aVis = getProjectVisuals(a);
+            const bVis = getProjectVisuals(b);
+            
+            const aPinnedTime = aVis.pinnedAt?.toMillis ? aVis.pinnedAt.toMillis() : (aVis.pinnedAt?.getTime ? aVis.pinnedAt.getTime() : 0);
+            const bPinnedTime = bVis.pinnedAt?.toMillis ? bVis.pinnedAt.toMillis() : (bVis.pinnedAt?.getTime ? bVis.pinnedAt.getTime() : 0);
+            
+            if (aPinnedTime !== bPinnedTime) return bPinnedTime - aPinnedTime; // Primary: pinnedAt descending
+            
+            const aUpdatedTime = aVis.updatedAt?.toMillis ? aVis.updatedAt.toMillis() : (aVis.updatedAt?.getTime ? aVis.updatedAt.getTime() : 0);
+            const bUpdatedTime = bVis.updatedAt?.toMillis ? bVis.updatedAt.toMillis() : (bVis.updatedAt?.getTime ? bVis.updatedAt.getTime() : 0);
+            return bUpdatedTime - aUpdatedTime; // Fallback: updatedAt descending
+        });
+
+    const handlePinToggle = async (project, e) => {
+        e.stopPropagation();
+        setOpenMenuId(null);
+        
+        const newIsPinned = !project.isPinned;
+        // Optimistic update
+        setAllProjects(prev => prev.map(p => 
+            p.id === project.id 
+                ? { ...p, isPinned: newIsPinned, pinnedAt: newIsPinned ? Timestamp.now() : null }
+                : p
+        ));
+        
+        try {
+            await updateProject(project.id, { 
+                isPinned: newIsPinned, 
+                pinnedAt: newIsPinned ? serverTimestamp() : null 
+            });
+        } catch (err) {
+            console.error("Failed to toggle pin:", err);
+            // In a real app we'd revert or show a toast
+        }
+    };
+
+    const handleArchiveToggle = async (project, e) => {
+        e.stopPropagation();
+        setOpenMenuId(null);
+        
+        const newStatus = project.status === 'archived' ? 'active' : 'archived';
+        
+        // Optimistic update
+        setAllProjects(prev => prev.map(p => 
+            p.id === project.id 
+                ? { ...p, status: newStatus, isPinned: false, pinnedAt: null }
+                : p
+        ));
+        
+        try {
+            await updateProject(project.id, { status: newStatus, isPinned: false, pinnedAt: null });
+        } catch (err) {
+            console.error(`Failed to ${newStatus === 'archived' ? 'archive' : 'unarchive'} project:`, err);
+        }
+    };
 
     return (
         <div className="home-page">
@@ -98,13 +176,13 @@ export default function MyProjects() {
                         <div className="project-feed-list flex flex-col gap-4">
                             
                             {/* Pinned Projects Section - If activeTab == All */}
-                            {activeTab === 'All' && pinnedProjects.length > 0 && (
+                            {activeTab !== 'Archived' && pinnedProjects.length > 0 && (
                                 <div className="pinned-section mb-6">
                                     <h3 className="text-sm font-bold tracking-wider text-on-surface-variant uppercase mb-3 px-1">Pinned Projects</h3>
                                     <div className="flex flex-col gap-3">
                                         {pinnedProjects.map(project => (
                                             <div key={`pinned-${project.id}`} 
-                                                className="bg-surface border border-thin rounded-xl p-4 shadow-sm hover:shadow-md hover:-translate-y-[2px] transition-all cursor-pointer flex gap-4 items-center"
+                                                className="bg-surface border-2 border-primary/30 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[2px] transition-all cursor-pointer flex gap-4 items-center relative"
                                                 onClick={() => navigate(`/projects/${project.id}`)}
                                             >
                                                 <div className="w-16 h-16 rounded-lg bg-surface-container-low flex items-center justify-center flex-shrink-0 border border-outline-variant">
@@ -116,9 +194,35 @@ export default function MyProjects() {
                                                         <div className="bg-primary h-1.5 rounded-full" style={{ width: '65%' }}></div>
                                                     </div>
                                                 </div>
-                                                <button className="px-4 py-2 rounded-full bg-primary text-on-primary font-bold text-xs hover:bg-primary-container transition-colors shadow-sm whitespace-nowrap">
+                                                <button className="px-4 py-2 mr-8 rounded-full bg-primary text-on-primary font-bold text-xs hover:bg-primary-container transition-colors shadow-sm whitespace-nowrap">
                                                     Continue Building
                                                 </button>
+
+                                                {/* 3-Dot Menu */}
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                                    <button 
+                                                        className="p-1 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant z-10 text-xl font-bold leading-none"
+                                                        onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === project.id ? null : project.id); }}
+                                                    >
+                                                        ⋮
+                                                    </button>
+                                                    {openMenuId === project.id && (
+                                                        <div className="absolute right-0 top-full mt-2 w-48 bg-surface border border-outline-variant shadow-lg rounded-xl overflow-hidden z-[100] flex flex-col py-1">
+                                                            <button 
+                                                                className="px-4 py-2.5 text-left text-sm font-bold text-on-surface hover:bg-surface-container transition-colors w-full"
+                                                                onClick={(e) => handlePinToggle(project, e)}
+                                                            >
+                                                                Unpin Project
+                                                            </button>
+                                                            <button 
+                                                                className="px-4 py-2.5 text-left text-sm font-bold text-error hover:bg-error-container hover:text-on-error-container transition-colors w-full"
+                                                                onClick={(e) => handleArchiveToggle(project, e)}
+                                                            >
+                                                                Archive Project
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -140,9 +244,38 @@ export default function MyProjects() {
                                     const avatarInitial = project.ownerName?.charAt(0).toUpperCase() || 'U';
 
                                     return (
-                                        <div key={project.id} className="sketch-card recruitment-card bg-surface-container-lowest border border-thin shadow-sm hover:shadow-md hover:-translate-y-[2px] transition-all duration-300">
+                                        <div key={project.id} className={`sketch-card recruitment-card bg-surface-container-lowest border ${project.isPinned ? 'border-primary/40 ring-2 ring-primary/10' : 'border-thin'} shadow-sm hover:shadow-md hover:-translate-y-[2px] transition-all duration-300 relative`}>
+                                            
+                                            {/* 3-Dot Menu */}
+                                            <div className="absolute right-4 top-4">
+                                                <button 
+                                                    className="p-1 rounded-md hover:bg-surface-container transition-colors text-on-surface-variant z-10 text-xl font-bold leading-none"
+                                                    onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === project.id ? null : project.id); }}
+                                                >
+                                                    ⋮
+                                                </button>
+                                                {openMenuId === project.id && (
+                                                    <div className="absolute right-0 top-full mt-1 w-48 bg-surface border border-outline-variant shadow-lg rounded-xl overflow-hidden z-[100] flex flex-col py-1">
+                                                        {project.status !== 'archived' && (
+                                                            <button 
+                                                                className="px-4 py-2.5 text-left text-sm font-bold text-on-surface hover:bg-surface-container transition-colors w-full"
+                                                                onClick={(e) => handlePinToggle(project, e)}
+                                                            >
+                                                                {project.isPinned ? 'Unpin Project' : 'Pin Project'}
+                                                            </button>
+                                                        )}
+                                                        <button 
+                                                            className={`px-4 py-2.5 text-left text-sm font-bold transition-colors w-full ${project.status === 'archived' ? 'text-on-surface hover:bg-surface-container' : 'text-error hover:bg-error-container hover:text-on-error-container'}`}
+                                                            onClick={(e) => handleArchiveToggle(project, e)}
+                                                        >
+                                                            {project.status === 'archived' ? 'Unarchive Project' : 'Archive Project'}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             {/* Header */}
-                                            <div className="rc-header">
+                                            <div className="rc-header pr-8">
                                                 <div className="rc-user-info cursor-pointer" onClick={() => window.open(`/profile/${project.ownerId}`, '_blank')}>
                                                     <div className="rc-avatar border border-outline-variant shadow-sm">{avatarInitial}</div>
                                                     <div className="rc-user-meta">

@@ -21,6 +21,7 @@ import MyProjects from './pages/MyProjects';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
+import ComingSoon from './pages/ComingSoon';
 
 function App() {
   return (
@@ -81,6 +82,11 @@ function App() {
             <Route path="/settings" element={
               <PrivateRoute>
                 <Settings />
+              </PrivateRoute>
+            } />
+            <Route path="/coming-soon" element={
+              <PrivateRoute>
+                <ComingSoon />
               </PrivateRoute>
             } />
           </Routes>

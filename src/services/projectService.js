@@ -182,3 +182,17 @@ export const deleteProject = async (projectId, currentUserId) => {
 
     await Promise.all(notificationPromises);
 };
+
+// Update an existing project
+export const updateProject = async (projectId, updateData) => {
+    const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+    const projectRef = doc(db, 'projects', projectId);
+    
+    // Add updatedAt timestamp automatically
+    const finalUpdateData = {
+        ...updateData,
+        updatedAt: serverTimestamp()
+    };
+    
+    await updateDoc(projectRef, finalUpdateData);
+};
