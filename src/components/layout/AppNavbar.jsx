@@ -52,7 +52,7 @@ const AppNavbar = ({ searchQuery, onSearchChange }) => {
             <NavLink to="/my-projects" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                 <Folder size={18} /> My Projects
             </NavLink>
-            <NavLink to="/messages" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            <NavLink to="/coming-soon" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                 <MessageSquare size={18} /> Messages
             </NavLink>
         </>
@@ -79,10 +79,10 @@ const AppNavbar = ({ searchQuery, onSearchChange }) => {
 
                     <div className="search-bar-container hide-mobile">
                         <Search size={18} className="search-icon" />
-                        <input 
-                            type="text" 
-                            placeholder="Search projects or skills..." 
-                            className="search-input sketch-input" 
+                        <input
+                            type="text"
+                            placeholder="Search projects or skills..."
+                            className="search-input sketch-input"
                             value={searchQuery !== undefined ? searchQuery : ""}
                             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
                         />
@@ -92,7 +92,7 @@ const AppNavbar = ({ searchQuery, onSearchChange }) => {
                         <Bell size={22} />
                     </Link>
 
-                    <button 
+                    <button
                         onClick={() => navigate('/projects/new')}
                         className="hide-mobile px-4 py-1.5 rounded-full bg-primary text-on-primary font-bold text-sm hover:-translate-y-[2px] shadow-sm hover:shadow-md transition-all duration-300 ml-2 mr-2 border border-transparent hover:bg-primary-container"
                     >
@@ -107,9 +107,9 @@ const AppNavbar = ({ searchQuery, onSearchChange }) => {
                             aria-label="User menu"
                             style={{ padding: 0, overflow: 'hidden' }}
                         >
-                            <img 
-                                src={`https://api.dicebear.com/7.x/micah/svg?seed=${userProfile?.displayName || currentUser?.displayName || 'User'}&backgroundColor=transparent`} 
-                                alt="User Avatar" 
+                            <img
+                                src={`https://api.dicebear.com/7.x/micah/svg?seed=${userProfile?.displayName || currentUser?.displayName || 'User'}&backgroundColor=transparent`}
+                                alt="User Avatar"
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                         </button>
@@ -145,10 +145,10 @@ const AppNavbar = ({ searchQuery, onSearchChange }) => {
                 <div className="mobile-nav-menu sketch-card">
                     <div className="mobile-search mb-3">
                         <Search size={18} className="search-icon" />
-                        <input 
-                            type="text" 
-                            placeholder="Search..." 
-                            className="search-input sketch-input w-100" 
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            className="search-input sketch-input w-100"
                             value={searchQuery !== undefined ? searchQuery : ""}
                             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
                         />
